@@ -15,6 +15,7 @@ use ReineRougeContactForm7\Admin\Pages\Main_Page;
 final class Settings
 {
     public const TAB_GENERAL = 'general';
+    public const FIELD_PIXEL = 'reinerouge_lead_pixel';
     public const FIELD_URL = 'reinerouge_url';
     public const FIELD_FORM_NAME = 'reinerouge_form_name';
     public const FIELD_FORM_FIELDS_NAME = 'reinerouge_form_fields_name';
@@ -110,6 +111,17 @@ final class Settings
                                     'type' => 'text',
                                     'std' => '',
                                     'desc' => esc_html__('Example: https://example.com/coreg_c(1)-s(1)/##EMAIL##', Collection::DOMAIN),
+                                    'attributes' => [
+                                        'placeholder' => 'https://'
+                                    ]
+                                ],
+                            ],
+                            self::FIELD_PIXEL => [
+                                'label' => esc_html__('Webkook of Lead Pixel', Collection::DOMAIN),
+                                'field_args' => [
+                                    'type' => 'url',
+                                    'std' => '',
+                                    'desc' => esc_html__('It will called on coreg success. Example: https://example.com/lead_c(123)-s(1)', Collection::DOMAIN),
                                     'attributes' => [
                                         'placeholder' => 'https://'
                                     ]

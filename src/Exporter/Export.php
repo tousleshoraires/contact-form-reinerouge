@@ -84,6 +84,7 @@ class Export
 
             $rr_form_id = get_option('cf7rr_'. Settings::FIELD_FORM_NAME, '' );
             $rr_coreg_url = get_option('cf7rr_'. Settings::FIELD_URL, '' );
+            $rr_pixel_webhook = get_option('cf7rr_'. Settings::FIELD_PIXEL, '' );
             $rr_log = get_option('cf7rr_'. Settings::FIELD_DEBUG, '' );
             $rr_form_field_other = get_option('cf7rr_'. Settings::FIELD_FORM_FIELD_OTHER, '' );
 
@@ -112,7 +113,7 @@ class Export
             }
 
             $rr_coreg_url = \str_replace('##EMAIL##', $email, $rr_coreg_url);
-            $rr_coreg_url.= '?ip='.$_SERVER['REMOTE_ADDR'].'&urlcollection='.$form_data['urlcollection'];
+            $rr_coreg_url.= '?ip='.$form_data['ip'].'&urlcollection='.$form_data['urlcollection'];
 
             $others = explode('&', $rr_form_field_other);
             foreach ($others as $other) {
@@ -122,6 +123,11 @@ class Export
                     $rr_coreg_url.= '&'.$fnv[0].'='.$fnv[1];
                 }
             }
+
+            /*
+             * to do: enable dry-run
+             */
+            // $rr_coreg_url.= '&dry-run=true';
 
             /*
             $defaults = array(
@@ -141,12 +147,27 @@ class Export
             ];
             $curl = new \WP_Http_Curl();
             $response = $curl->request($rr_coreg_url, $args);
-            // $response = $this->request($rr_coreg_url, $args);
+            $responseBody = json_decode($response['body'], true);
+            $responseBody['success'] = true;
+
+            //$hookResponse = [];
+            if ($rr_pixel_webhook !== '' && \array_key_exists('success', $responseBody) && $responseBody['success']) {
+                $rr_pixel_webhook.= (strpos($rr_pixel_webhook, '?') === false) ? '?' : '&';
+                $rr_pixel_webhook.= 'lead_id='.sha1($email);
+                $rr_pixel_webhook.= '&custom1='.sha1($email);
+                $hookArgs = ['method' => 'GET'];
+                //$hookResponse = $curl->request($rr_pixel_webhook, $hookArgs);
+                $curl->request($rr_pixel_webhook, $hookArgs);
+            }
 
             if ((bool)$rr_log) {
+                $content = date('H:i:s')."\t".$rr_coreg_url."\t".\serialize($form_data)."\t".\serialize($response).PHP_EOL;
+                $content.= date('H:i:s')."\t".$rr_pixel_webhook."\t\t".PHP_EOL;
+                $content.= '---'.PHP_EOL;
+
                 file_put_contents(
                     dirname(__DIR__, 2).'/logs/'.date('Ymd').'.log',
-                    date('H:i')."\t".$rr_coreg_url."\t".\serialize($form_data)."\t".\serialize($response).PHP_EOL.'---'.PHP_EOL,
+                    $content,
                     FILE_APPEND
                 );
             }
@@ -198,6 +219,7 @@ class Export
             $form_data['urlcollection'] = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . '://';
             $form_data['urlcollection'].= $_SERVER['HTTP_HOST'];
         }
+        $form_data['urlcollection'] = urlencode($form_data['urlcollection']);
 
         return $form_data;
     }
