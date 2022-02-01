@@ -121,7 +121,7 @@ final class Settings
                                 'field_args' => [
                                     'type' => 'url',
                                     'std' => '',
-                                    'desc' => esc_html__('It will called on coreg success. Example: https://example.com/lead_c(123)-s(1)', Collection::DOMAIN),
+                                    'desc' => esc_html__('It will called on coreg success. Example: https://example.com/lead_c(123)-s(1) or https://example.com/lead_p(123lorem)?h=##HASH##', Collection::DOMAIN),
                                     'attributes' => [
                                         'placeholder' => 'https://'
                                     ]
