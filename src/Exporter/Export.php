@@ -12,6 +12,7 @@
 namespace ReineRougeContactForm7\Exporter;
 
 use ReineRougeContactForm7\Settings;
+use ReineRougeContactForm7\Processor\Webhook;
 
 class Export
 {
@@ -55,11 +56,11 @@ class Export
             $form_data['cf7rr_status'] = 'unread';
             foreach ($data as $key => $d) {
 
-                if ( !in_array($key, $not_allowed_tags ) && !in_array($key, $uploaded_files )  ) {
+                if ( !\in_array($key, $not_allowed_tags ) && !\in_array($key, $uploaded_files )  ) {
 
                     $tmpD = $d;
 
-                    if ( ! is_array($d) ){
+                    if ( !\is_array($d) ){
                         $bl   = array('\"',"\'",'/','\\','"',"'");
                         $wl   = array('&quot;','&#039;','&#047;', '&#092;','&quot;','&#039;');
                         $tmpD = str_replace($bl, $wl, $tmpD );
@@ -67,7 +68,7 @@ class Export
 
                     $form_data[$key] = $tmpD;
                 }
-                if ( in_array($key, $uploaded_files ) ) {
+                if ( \in_array($key, $uploaded_files ) ) {
                     $file = is_array( $files[ $key ] ) ? reset( $files[ $key ] ) : $files[ $key ];
                     $file_name = empty( $file ) ? '' : $time_now.'-'.$key.'-'.basename( $file ); 
                     $form_data[$key.'cf7rr_file'] = $file_name;
@@ -129,18 +130,6 @@ class Export
              */
             // $rr_coreg_url.= '&dry-run=true';
 
-            /*
-            $defaults = array(
-                'method'      => 'GET',
-                'timeout'     => 5,
-                'redirection' => 5,
-                'httpversion' => '1.0',
-                'blocking'    => true,
-                'headers'     => array(),
-                'body'        => null,
-                'cookies'     => array(),
-            );
-            */
             $args = [
                 'method'      => 'POST',
                 'body'        => $form_data
@@ -150,13 +139,10 @@ class Export
             $responseBody = json_decode($response['body'], true);
             $responseBody['success'] = true;
 
-            //$hookResponse = [];
             if ($rr_pixel_webhook !== '' && \array_key_exists('success', $responseBody) && $responseBody['success']) {
-                $rr_pixel_webhook.= (strpos($rr_pixel_webhook, '?') === false) ? '?' : '&';
-                $rr_pixel_webhook.= 'lead_id='.sha1($email);
-                $rr_pixel_webhook.= '&custom1='.sha1($email);
+                $rr_pixel_webhook = (new Webhook())->process($rr_pixel_webhook, $email);
+
                 $hookArgs = ['method' => 'GET'];
-                //$hookResponse = $curl->request($rr_pixel_webhook, $hookArgs);
                 $curl->request($rr_pixel_webhook, $hookArgs);
             }
 

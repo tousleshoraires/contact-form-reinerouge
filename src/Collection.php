@@ -13,6 +13,8 @@
 
 namespace ReineRougeContactForm7;
 
+use ReineRougeContactForm7\Front\EventListener\RequestListener;
+
 final class Collection
 {
     public const DOMAIN = 'contact-form-rr7';
@@ -82,6 +84,8 @@ final class Collection
         include_once( dirname(__DIR__) . '/src/Admin/Pages/Main_Page.php' );
         include_once( dirname(__DIR__) . '/src/Admin/Utils/Response.php' );
         include_once( dirname(__DIR__) . '/src/Exporter/Export.php' );
+        include_once( dirname(__DIR__) . '/src/Front/EventListener/RequestListener.php' );
+        include_once( dirname(__DIR__) . '/src/Processor/Webhook.php' );
         include_once( dirname(__DIR__) . '/src/Settings.php' );
 
     }
@@ -104,9 +108,13 @@ final class Collection
         $this->i18n();
         $this->includes();
     
-        if ( is_admin() ) {
+        if ( \is_admin() ) {
             add_action( 'admin_menu', [ new \ReineRougeContactForm7\Admin\Menu(), 'register_pages' ], 900 );
             add_action( 'admin_init', [ new Settings(), 'register_settings_fields' ] );
+        }
+
+        if ( !\is_admin() ) {
+            (new RequestListener())->compute();
         }
 
         new \ReineRougeContactForm7\Exporter\Export();
