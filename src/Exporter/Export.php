@@ -137,7 +137,6 @@ class Export
             $curl = new \WP_Http_Curl();
             $response = $curl->request($rr_coreg_url, $args);
             $responseBody = json_decode($response['body'], true);
-            $responseBody['success'] = true;
 
             if ($rr_pixel_webhook !== '' && \array_key_exists('success', $responseBody) && $responseBody['success']) {
                 $rr_pixel_webhook = (new Webhook())->process($rr_pixel_webhook, $email);
