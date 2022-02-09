@@ -19,6 +19,7 @@ final class Settings
     public const FIELD_URL = 'reinerouge_url';
     public const FIELD_FORM_NAME = 'reinerouge_form_name';
     public const FIELD_FORM_FIELDS_NAME = 'reinerouge_form_fields_name';
+    public const FIELD_FORM_FIELDS_LASTNAME_DEFAULT = 'reinerouge_form_fields_lastname_default';
     public const FIELD_FORM_FIELDS_PHONE = 'reinerouge_form_fields_phone';
     public const FIELD_FORM_FIELDS_ADDRESS = 'reinerouge_form_fields_address';
     public const FIELD_FORM_FIELDS_ZIPCODE = 'reinerouge_form_fields_zipcode';
@@ -149,6 +150,14 @@ final class Settings
                                     'type' => 'text',
                                     'std' => '',
                                     'desc' => esc_html__('Name of the field combining surname and firstname (left blank if not combined).', Collection::DOMAIN),
+                                ],
+                            ],
+                            self::FIELD_FORM_FIELDS_LASTNAME_DEFAULT => [
+                                'label' => esc_html__('Default last name', Collection::DOMAIN),
+                                'field_args' => [
+                                    'type' => 'text',
+                                    'std' => '',
+                                    'desc' => esc_html__('If last name is empty, what will be the value?', Collection::DOMAIN),
                                 ],
                             ],
                             self::FIELD_FORM_FIELDS_PHONE => [
