@@ -161,6 +161,7 @@ class Export
 
     private function computeFields(array $form_data): array
     {
+        $rr_form_default_lastname = get_option('cf7rr_'. Settings::FIELD_FORM_FIELDS_LASTNAME_DEFAULT, '');
         $rr_form_combined_name = get_option('cf7rr_'. Settings::FIELD_FORM_FIELDS_NAME, '');
         $rr_form_phone = get_option('cf7rr_'. Settings::FIELD_FORM_FIELDS_PHONE, '');
         $rr_form_address = get_option('cf7rr_'. Settings::FIELD_FORM_FIELDS_ADDRESS, '');
@@ -172,6 +173,9 @@ class Export
             $firstName = array_shift($yourNames);
             $form_data['firstname'] = $firstName;
             $form_data['lastname'] = implode(' ', $yourNames);
+        }
+        if (empty($form_data['lastname']) && !empty($rr_form_default_lastname)) {
+            $form_data['lastname'] = $rr_form_default_lastname;
         }
         if ($rr_form_phone !== '') {
             $form_data['phone'] = $form_data[$rr_form_phone];

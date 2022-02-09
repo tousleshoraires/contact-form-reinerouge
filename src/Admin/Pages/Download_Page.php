@@ -13,7 +13,12 @@ class Download_Page extends Abstract_Page
      */
     public function index(): void
     {
-        $fileName = dirname(__DIR__, 3).'/logs/'.date('Ymd').'.log';
+        $date = date('Ymd');
+        if (!empty($_GET['day'])) {
+            $date = $_GET['day'];
+        }
+
+        $fileName = dirname(__DIR__, 3).'/logs/'.$date.'.log';
         if (!file_exists($fileName)) {
             echo $this->noData();
             die;
@@ -26,6 +31,10 @@ class Download_Page extends Abstract_Page
 
         echo '<div class="wrap">';
         echo '<h1 class="wp-heading-inline">Logs</h1>';
+        echo '<form>';
+        echo '<input type="text" name="day" value="'.$date.'">';
+        echo '<button type="submit">change day</button>';
+        echo '</form>';
 
         echo '<table class="wp-list-table widefat fixed striped">';
     
