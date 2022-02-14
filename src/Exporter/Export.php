@@ -194,6 +194,8 @@ class Export
             unset($form_data[$rr_form_city]);
         }
 
+        $form_data = $this->arrayAsString($form_data);
+
         return $form_data;
     }
 
@@ -209,6 +211,26 @@ class Export
             $form_data['urlcollection'].= $_SERVER['HTTP_HOST'];
         }
         $form_data['urlcollection'] = urlencode($form_data['urlcollection']);
+
+        return $form_data;
+    }
+
+    /**
+     * Transform the arrays into string value only if array length is equal to 1.
+     *
+     * @param array $form_data Array of data from CF7
+     * 
+     * @return array
+     *
+     * @since 1.3.0
+     */
+    private function arrayAsString(array $form_data): array
+    {
+        foreach ($form_data as $field => $value) {
+            if (\is_array($value) && \count($value) === 1) {
+                $form_data[$field] = $value;
+            }
+        }
 
         return $form_data;
     }
