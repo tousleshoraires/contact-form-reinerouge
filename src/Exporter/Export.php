@@ -228,7 +228,8 @@ class Export
     {
         foreach ($form_data as $field => $value) {
             if (\is_array($value) && \count($value) === 1) {
-                $form_data[$field] = $value;
+                $first = \array_shift($value);
+                $form_data[$field] = $first;
             }
         }
 
