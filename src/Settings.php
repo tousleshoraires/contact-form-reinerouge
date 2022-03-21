@@ -32,6 +32,9 @@ final class Settings
         $tabs = self::getTabs();
 
         foreach ( $tabs as $tab ) {
+            if ( ! array_key_exists('sections', $tab) ) {
+                continue;
+            }
 
             foreach ( $tab['sections'] as $section_id => $section ) {
                 $full_section_id = 'cf7rr_' . $section_id . '_section';
@@ -111,7 +114,8 @@ final class Settings
                                 'field_args' => [
                                     'type' => 'text',
                                     'std' => '',
-                                    'desc' => esc_html__('Example: https://example.com/coreg_c(1)-s(1)/##EMAIL##', Collection::DOMAIN),
+                                    'desc' => esc_html__('Example: https://example.com/coreg_c(1)-s(1)/##EMAIL##', Collection::DOMAIN).
+                                        '<br><span style="color: #f90;">'.esc_html__('This can be overriden locally.', Collection::DOMAIN).'</span>',
                                     'attributes' => [
                                         'placeholder' => 'https://'
                                     ]
@@ -122,7 +126,8 @@ final class Settings
                                 'field_args' => [
                                     'type' => 'url',
                                     'std' => '',
-                                    'desc' => esc_html__('It will called on coreg success. Example: https://example.com/lead_c(123)-s(1) or https://example.com/lead_p(123lorem)?h=##HASH##', Collection::DOMAIN),
+                                    'desc' => '<span style="color: #f00;">'.esc_html__('Deprecated: this option will be remove in a future version. Use campaign twins instead.', Collection::DOMAIN).'</span><br>'.
+                                        esc_html__('It will called on coreg success. Example: https://example.com/lead_c(123)-s(1) or https://example.com/lead_p(123lorem)?h=##HASH##', Collection::DOMAIN),
                                     'attributes' => [
                                         'placeholder' => 'https://'
                                     ]
@@ -133,7 +138,8 @@ final class Settings
                                 'field_args' => [
                                     'type' => 'text',
                                     'std' => '',
-                                    'desc' => esc_html__('Example: 1', Collection::DOMAIN),
+                                    'desc' => '<span style="color: #f00;">'.esc_html__('Deprecated: this option will be remove in a future version. Enable the contact form locally instead.', Collection::DOMAIN).'</span><br>'.
+                                    esc_html__('Example: 1', Collection::DOMAIN),
                                 ],
                             ],
                             self::FIELD_DEBUG => [
@@ -197,7 +203,8 @@ final class Settings
                                 'field_args' => [
                                     'type' => 'text',
                                     'std' => '',
-                                    'desc' => esc_html__('Other values to send.', Collection::DOMAIN),
+                                    'desc' => esc_html__('Other values to send.', Collection::DOMAIN).
+                                        '<br><span style="color: #f90;">'.esc_html__('This can be overriden locally.', Collection::DOMAIN).'</span>',
                                 ],
                             ],
                         ],
