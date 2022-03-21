@@ -16,6 +16,14 @@ use ReineRougeContactForm7\Processor\Webhook;
 
 class Export
 {
+    private array $settings = [
+        'enabled' => false,
+        'coreg_url' => '',
+        'fields' => [
+            'other' => ''
+        ]
+    ];
+
     public function __construct()
     {
         add_action( 'wpcf7_before_send_mail', [ $this, 'cf7rr_before_send_mail' ] );
@@ -40,6 +48,7 @@ class Export
         $submission   = \WPCF7_Submission::get_instance();
         $contact_form = $submission->get_contact_form();
         $tags_names   = array();
+        $properties = $contact_form->get_properties();
 
         if ( $submission ) {
 
@@ -83,28 +92,31 @@ class Export
             $form_post_id = $form_tag->id();
             // $form_date    = current_time('Y-m-d H:i:s');
 
+            /*
+             * This would contains the settings of the forms.
+             * It overrides the default settings.
+             */
+            $this->compute_settings($properties);
+
             $rr_form_id = get_option('cf7rr_'. Settings::FIELD_FORM_NAME, '' );
             $rr_coreg_url = get_option('cf7rr_'. Settings::FIELD_URL, '' );
             $rr_pixel_webhook = get_option('cf7rr_'. Settings::FIELD_PIXEL, '' );
             $rr_log = get_option('cf7rr_'. Settings::FIELD_DEBUG, '' );
             $rr_form_field_other = get_option('cf7rr_'. Settings::FIELD_FORM_FIELD_OTHER, '' );
 
-            if ((int)$form_post_id !== (int)$rr_form_id) {
+            if ((int)$form_post_id !== (int)$rr_form_id && $this->settings['enabled'] === false ) {
                 return;
             }
-            if ($rr_coreg_url === '') {
+            if ($this->settings['coreg_url'] === '' ) {
                 return;
             }
 
-            $email = '';
-            if (\array_key_exists('email', $form_data)) {
-                $email = $form_data['email'];
-            } elseif (\array_key_exists('your-email', $form_data)) {
-                $email = $form_data['your-email'];
-            }
+            $email = $this->compute_email( $form_data);
 
             $form_data = $this->computeFields($form_data);
             $form_data = $this->mandatoryFields($form_data);
+
+            $rr_coreg_url = $this->settings['coreg_url'];
 
             if (!preg_match('`##EMAIL##`', $rr_coreg_url) &&
                 preg_match('`coreg\_`', $rr_coreg_url) &&
@@ -116,7 +128,7 @@ class Export
             $rr_coreg_url = \str_replace('##EMAIL##', $email, $rr_coreg_url);
             $rr_coreg_url.= '?ip='.$form_data['ip'].'&urlcollection='.$form_data['urlcollection'];
 
-            $others = explode('&', $rr_form_field_other);
+            $others = explode('&', $this->settings['fields']['other']);
             foreach ($others as $other) {
                 $fnv = explode('=', $other);
                 if (count($fnv) === 2) {
@@ -124,6 +136,10 @@ class Export
                     $rr_coreg_url.= '&'.$fnv[0].'='.$fnv[1];
                 }
             }
+
+            var_dump($rr_coreg_url);
+            var_dump($this->settings);
+            die;
 
             /*
              * to do: enable dry-run
@@ -234,5 +250,68 @@ class Export
         }
 
         return $form_data;
+    }
+
+    /**
+     * Compute the form_data transmitted by the visitor to find out which index has to be
+     * used to define email.
+     * Return the email of the visitor.
+     * 
+     * @param array $form_data Array of data from CF7
+     * 
+     * @return string
+     * 
+     * @since 1.4.0
+     */
+    private function compute_email(array $form_data): string
+    {
+        $email = '';
+        if (\array_key_exists('email', $form_data)) {
+            $email = $form_data['email'];
+        } elseif (\array_key_exists('your-email', $form_data)) {
+            $email = $form_data['your-email'];
+        }
+        return $email;
+    }
+
+    private function compute_settings($properties): void
+    {
+        if ( ! is_array($properties) || ! array_key_exists('additional_settings', $properties) ) {
+            return;
+        }
+
+        $settings = [];
+        $lines = explode(PHP_EOL, $properties['additional_settings']);
+        foreach ($lines as $setting) {
+            $line = explode(': ', $setting);
+
+            if ( count($line) !== 2) {
+                continue;
+            }
+
+            $value = trim($line[1]);
+
+            $settings[ $line[0] ] = $value;
+
+            switch ( trim($line[0]) ) {
+                case 'reinerouge_enabled':
+                    $this->settings['enabled'] = (bool)$value;
+                    break;
+                case 'reinerouge_fields_other':
+                    $this->settings['fields']['other'] = $value;
+                    break;
+                case 'reinerouge_webhook_url':
+                    $this->settings['coreg_url'] = $value;
+                    break;
+            }
+        }
+
+        if ($this->settings['coreg_url'] === '') {
+            $this->settings['coreg_url'] = get_option('cf7rr_'. Settings::FIELD_URL, '' );
+        }
+
+        if ( ! array_key_exists('other', $this->settings['fields']) || $this->settings['fields']['other'] === '') {
+            $this->settings['fields']['other'] = get_option('cf7rr_'. Settings::FIELD_FORM_FIELD_OTHER, '' );
+        }
     }
 }
