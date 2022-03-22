@@ -6,7 +6,7 @@ This add-on open the possibility to sent the submitted datas to Reine Rouge and 
 
 ## Installation
 
-As of version 1.1, installation is manual. You need to:
+As of version 1.4, installation is manual. You need to:
 
 * download the zip file
 * upload the file in your Wordpress admin in "add a new extension" page
@@ -15,3 +15,5 @@ As of version 1.1, installation is manual. You need to:
 ## Configuration
 
 All the configuration is available in the administration. After activation of the plugin, a new config link will appear in the Contact Form menu.
+
+The form have to be configured using the _aditionnal settings_ tab in their CF7 edition page. Export can be temporaraly disabled if needed. Information is [available in the wiki page](https://github.com/tousleshoraires/contact-form-reinerouge/wiki/Configure-a-form-locally).
