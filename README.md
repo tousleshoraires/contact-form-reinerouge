@@ -17,3 +17,7 @@ As of version 1.4, installation is manual. You need to:
 All the configuration is available in the administration. After activation of the plugin, a new config link will appear in the Contact Form menu.
 
 The form have to be configured using the _aditionnal settings_ tab in their CF7 edition page. Export can be temporaraly disabled if needed. Information is [available in the wiki page](https://github.com/tousleshoraires/contact-form-reinerouge/wiki/Configure-a-form-locally).
+
+## Credits
+
+This plugin has been developped by [TLH, web-to-store and web agency](https://tousleshoraires.com/).
