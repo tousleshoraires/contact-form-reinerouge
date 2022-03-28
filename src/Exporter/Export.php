@@ -137,10 +137,6 @@ class Export
                 }
             }
 
-            var_dump($rr_coreg_url);
-            var_dump($this->settings);
-            die;
-
             /*
              * to do: enable dry-run
              */
