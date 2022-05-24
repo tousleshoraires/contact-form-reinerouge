@@ -148,6 +148,17 @@ class Export
             ];
             $curl = new \WP_Http_Curl();
             $response = $curl->request($rr_coreg_url, $args);
+            if ($response instanceof \WP_Error) {
+                $content = 'Error_'.date('H:i:s')."\t".$rr_coreg_url."\t".\serialize($form_data)."\t".\serialize($response).PHP_EOL;
+                $content.= '---'.PHP_EOL;
+
+                file_put_contents(
+                    dirname(__DIR__, 2).'/logs/errors_'.date('Ymd').'.log',
+                    $content,
+                    FILE_APPEND
+                );
+                return;
+            }
             $responseBody = json_decode($response['body'], true);
 
             if ($rr_pixel_webhook !== '' && \array_key_exists('success', $responseBody) && $responseBody['success']) {
