@@ -13,6 +13,7 @@ namespace ReineRougeContactForm7\Exporter;
 
 use ReineRougeContactForm7\Settings;
 use ReineRougeContactForm7\Processor\Webhook;
+use ReineRougeContactForm7\Front\EventListener\RequestListener;
 
 class Export
 {
@@ -115,6 +116,7 @@ class Export
 
             $form_data = $this->computeFields($form_data);
             $form_data = $this->mandatoryFields($form_data);
+            $form_data = $this->s2sField($form_data);
 
             $rr_coreg_url = $this->settings['coreg_url'];
 
@@ -234,6 +236,21 @@ class Export
             $form_data['urlcollection'].= $_SERVER['HTTP_HOST'];
         }
         $form_data['urlcollection'] = urlencode($form_data['urlcollection']);
+
+        return $form_data;
+    }
+
+    private function s2sField(array $form_data): array
+    {
+        /*
+         * For S2S hash
+         */
+        if (PHP_SESSION_ACTIVE !== session_status()) {
+            session_start();
+        }
+        $hash = $_SESSION[RequestListener::HASHNAME];
+
+        $form_data['h'] = $hash;
 
         return $form_data;
     }
