@@ -19,7 +19,7 @@ final class Collection
 {
     public const DOMAIN = 'contact-form-rr7';
     public const NAME = 'ReineRouge - Contact Form 7 add-on';
-    public const VERSION = '1.4.1';
+    public const VERSION = '1.4.2';
 
     /**
      * Instance
