@@ -128,7 +128,7 @@ class Export
             }
 
             $rr_coreg_url = \str_replace('##EMAIL##', $email, $rr_coreg_url);
-            $rr_coreg_url.= '?ip='.$form_data['ip'].'&urlcollection='.$form_data['urlcollection'];
+            $rr_coreg_url.= '?ip='.$form_data['ip'].'&urlcollection='.$form_data['urlcollection'].'&timestamp='.urlencode($form_data['timestamp']);
 
             $others = explode('&', $this->settings['fields']['other']);
             foreach ($others as $other) {
