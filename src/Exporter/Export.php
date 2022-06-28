@@ -128,7 +128,7 @@ class Export
             }
 
             $rr_coreg_url = \str_replace('##EMAIL##', $email, $rr_coreg_url);
-            $rr_coreg_url.= '?ip='.$form_data['ip'].'&urlcollection='.$form_data['urlcollection'].'&timestamp='.urlencode($form_data['timestamp']);
+            $rr_coreg_url.= '?ip='.$form_data['ip'].'&urlcollection='.$form_data['urlcollection'].'&timestamp='.str_replace(' ', '%20', $form_data['timestamp']);
 
             $others = explode('&', $this->settings['fields']['other']);
             foreach ($others as $other) {
@@ -201,6 +201,12 @@ class Export
         }
         if (empty($form_data['lastname']) && !empty($rr_form_default_lastname)) {
             $form_data['lastname'] = $rr_form_default_lastname;
+        }
+        if (empty($form_data['firstname']) && !empty($form_data['your-firstname'])) {
+            $form_data['firstname'] = trim($form_data['your-firstname']);
+        }
+        if (empty($form_data['lastname']) && !empty($form_data['your-lastname'])) {
+            $form_data['lastname'] = trim($form_data['your-lastname']);
         }
         if ($rr_form_phone !== '') {
             $form_data['phone'] = $form_data[$rr_form_phone];
