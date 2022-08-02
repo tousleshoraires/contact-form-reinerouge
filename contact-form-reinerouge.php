@@ -8,7 +8,7 @@ Author: TLH SARL
 Author URI: https://tousleshoraires.com
 Text Domain: contact-form-rr7
 Domain Path: /languages/
-Version: 1.4.3
+Version: 1.4.4
 */
 
 if (!defined('ABSPATH')) {
