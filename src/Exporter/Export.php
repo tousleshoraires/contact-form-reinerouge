@@ -202,6 +202,12 @@ class Export
         if (empty($form_data['lastname']) && !empty($rr_form_default_lastname)) {
             $form_data['lastname'] = $rr_form_default_lastname;
         }
+		if (empty($form_data['lastname']) && !empty($form_data['your-name'])) {
+            $form_data['lastname'] = $form_data['your-name'];
+        }
+		if (empty($form_data['firstname']) && !empty($form_data['your-firstname'])) {
+            $form_data['firstname'] = $form_data['your-firstname'];
+        }
         if ($rr_form_phone !== '') {
             $form_data['phone'] = $form_data[$rr_form_phone];
             unset($form_data[$rr_form_phone]);

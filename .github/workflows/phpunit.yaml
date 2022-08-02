@@ -32,4 +32,4 @@ jobs:
           composer install --no-interaction --no-suggest --prefer-dist
       - name: Execute tests (Unit and Feature tests) via PHPUnit
         run: |
-          php vendor/bin/phpunit Tests/
+          php vendor/bin/phpunit --bootstrap=Tests/bootstrap.php Tests/
