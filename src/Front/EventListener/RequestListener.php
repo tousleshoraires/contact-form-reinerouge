@@ -24,7 +24,7 @@ final class RequestListener
     public static function compute(): void
     {
         if (!empty($_GET['h'])) {
-            $hash = trim($_GET['h']);
+            $hash = esc_attr(trim($_GET['h']));
 
             if (PHP_SESSION_ACTIVE !== session_status()) {
                 session_start();
