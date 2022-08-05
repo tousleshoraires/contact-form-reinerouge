@@ -15,7 +15,7 @@ class Download_Page extends Abstract_Page
     {
         $date = date('Ymd');
         if (!empty($_GET['day'])) {
-            $date = $_GET['day'];
+            $date = sanitize_text_field( $_GET['day'] );
         }
 
         $fileName = dirname(__DIR__, 3).'/logs/'.$date.'.log';
@@ -32,7 +32,7 @@ class Download_Page extends Abstract_Page
         echo '<div class="wrap">';
         echo '<h1 class="wp-heading-inline">Logs</h1>';
         echo '<form>';
-        echo '<input type="text" name="day" value="'.esc_attr($date).'">';
+        echo '<input type="text" name="day" value="' . $date . '">';
         echo '<button type="submit">change day</button>';
         echo '</form>';
 

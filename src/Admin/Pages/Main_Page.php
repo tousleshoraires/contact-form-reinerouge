@@ -31,11 +31,15 @@ class Main_Page extends Abstract_Page
                 $active_class = ' nav-tab-active';
             }
 
-            $sanitized_tab_id = esc_attr( $tab_id );
+            $sanitized_tab_id = esc_html( $tab_id );
             $sanitized_tab_label = esc_html( $tab['label'] );
 
             // PHPCS - Escaped the relevant strings above.
-            echo "<a id='reinerouge-settings-tab-{$sanitized_tab_id}' class='nav-tab{$active_class}' href='#tab-{$sanitized_tab_id}'>{$sanitized_tab_label}</a>"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+            ?>
+            <a id="reinerouge-settings-tab-<?=$sanitized_tab_id ?>" class="nav-tab<?=active_class?>" href="#tab-<?=$sanitized_tab_id ?>">
+                <?=$sanitized_tab_label ?>
+            </a>
+            <?php
         }
         echo '</div>';
         echo '<form id="reinerouge-settings-form" method="post" action="options.php">';
@@ -52,7 +56,7 @@ class Main_Page extends Abstract_Page
                     $active_class = ' reinerouge-active';
                 }
 
-                $sanitized_tab_id = esc_attr( $tab_id );
+                $sanitized_tab_id = sanitize_html_class( $tab_id );
 
                 // PHPCS - $active_class is a non-dynamic string and $sanitized_tab_id is escaped above.
                 echo "<div id='tab-{$sanitized_tab_id}' class='reinerouge-settings-form-page{$active_class}'>"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
