@@ -32,7 +32,7 @@ class Download_Page extends Abstract_Page
         echo '<div class="wrap">';
         echo '<h1 class="wp-heading-inline">Logs</h1>';
         echo '<form>';
-        echo '<input type="text" name="day" value="' . $date . '">';
+        echo '<input type="text" name="day" value="' . esc_attr($date) . '">';
         echo '<button type="submit">change day</button>';
         echo '</form>';
 
