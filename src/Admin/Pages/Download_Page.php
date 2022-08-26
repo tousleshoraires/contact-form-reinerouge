@@ -15,7 +15,7 @@ class Download_Page extends Abstract_Page
     {
         $date = date('Ymd');
         if (!empty($_GET['day'])) {
-            $date = $_GET['day'];
+            $date = sanitize_text_field( $_GET['day'] );
         }
 
         $fileName = dirname(__DIR__, 3).'/logs/'.$date.'.log';
@@ -32,7 +32,7 @@ class Download_Page extends Abstract_Page
         echo '<div class="wrap">';
         echo '<h1 class="wp-heading-inline">Logs</h1>';
         echo '<form>';
-        echo '<input type="text" name="day" value="'.$date.'">';
+        echo '<input type="text" name="day" value="' . esc_attr($date) . '">';
         echo '<button type="submit">change day</button>';
         echo '</form>';
 
@@ -53,19 +53,19 @@ class Download_Page extends Abstract_Page
             $response = unserialize($response);
 
             echo '<tr>';
-            echo '<td width="60">'.$row[0].'</td>';
-            echo '<td>'.$row[1].'</td>';
+            echo '<td width="60">'.esc_attr($row[0]).'</td>';
+            echo '<td>'.esc_attr($row[1]).'</td>';
             echo '<td>';
             if (\is_array($response) && \array_key_exists('body', $response)) {
-                echo $response['body'];
+                echo esc_attr($response['body']);
             } elseif ($response instanceof \WP_Error) {
                 foreach ($response->errors as $error) {
-                    echo implode('<br>'.PHP_EOL, $error);
+                    echo implode('<br>'.PHP_EOL, esc_attr($error));
                 }
             }
             echo '</td>';
             // echo '<td><pre>'.print_r($response, true).'</pre></td>';
-            echo '<td>'.$row[2].'</td>';
+            echo '<td>'.esc_attr($row[2]).'</td>';
             // echo '<td>'.$row[3].'</td>';
             echo '</tr>';
         }

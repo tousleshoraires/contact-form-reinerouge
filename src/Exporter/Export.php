@@ -232,14 +232,14 @@ class Export
 
     private function mandatoryFields(array $form_data): array
     {
-        $form_data['ip'] = $_SERVER['REMOTE_ADDR'];
+        $form_data['ip'] = sanitize_text_field( $_SERVER['REMOTE_ADDR'] );
         $form_data['timestamp'] = date('Y-m-d H:i:s');
-        // $form_data['urlcollection'] = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . '://';
-        // $form_data['urlcollection'].= $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-        $form_data['urlcollection'] = $_SERVER['HTTP_REFERER'];
+
+        $form_data['urlcollection'] = sanitize_url( $_SERVER['HTTP_REFERER'] );
         if (empty($form_data['urlcollection'])) {
-            $form_data['urlcollection'] = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . '://';
-            $form_data['urlcollection'].= $_SERVER['HTTP_HOST'];
+            // $form_data['urlcollection'] = (is_ssl() ? "https" : "http") . '://';
+            // $form_data['urlcollection'].= sanitize_url( $_SERVER['HTTP_HOST'] );
+            $form_data['urlcollection'].= get_site_url();
         }
         $form_data['urlcollection'] = urlencode($form_data['urlcollection']);
 
